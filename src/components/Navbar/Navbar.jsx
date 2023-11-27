@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import img from "../../assets/person/1.jpeg"
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
     // let Links =[
@@ -15,10 +16,14 @@ const Navbar = () => {
     return (
         <div className='shadow-md w-full fixed top-0 left-0 z-10 '>
             <div className='flex items-center py-2 bg-blue-600  pl-4'>
+                
                 <div className='font-bold text-2xl cursor-pointer items-center font-[Poppins] 
       text-white w-3/12 px-2'>
+        <Link to="/">
                     Pandabook
+                    </Link>
                 </div>
+                
 
                 <div onClick={() => setOpen(!open)} className='text-3xl absolute right-6 top-3 cursor-pointer md:hidden'>
                     <ion-icon name={open ? 'close' : 'menu'}></ion-icon>
@@ -35,8 +40,8 @@ const Navbar = () => {
 
                 <ul className={`md:flex md:items-center bg-blue-600 md:justify-around md:pb-0 pb-12 absolute md:static  md:z-auto z-[-1] left-0 w-full md:w-4/12 md:pl-0 pl-9 transition-all duration-500 ease-in ${open ? 'top-16 ' : 'top-[-490px]'}`}>
                     <div className='text-sm font-medium text-white'>
-                        <span className='mr-3'>Homepage</span>
-                        <span>Timeline</span>
+                        <span className='mr-3'><Link to="/">Homepage</Link></span>
+                        <span><Link to="profile/:username">Timeline</Link></span>
                     </div>
                     <div className='flex items-center justify-center'>
                         <div className='mx-2'>
