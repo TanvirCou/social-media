@@ -1,6 +1,7 @@
-import { useState } from 'react';
-import img from "../../assets/person/1.jpeg"
+import { useContext, useState } from 'react';
+import blankDp from "../../assets/person/noAvatar.png";
 import { Link } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 
 const Navbar = () => {
     // let Links =[
@@ -12,6 +13,7 @@ const Navbar = () => {
     //   ];
 
     const [open, setOpen] = useState(false);
+    const {user} = useContext(AuthContext);
 
     return (
         <div className='shadow-md w-full fixed top-0 left-0 z-10 '>
@@ -64,7 +66,7 @@ const Navbar = () => {
                         </div>
                     </div>
                     <div>
-                        <img src={img} alt="" className='w-8 h-8 rounded-[50%] object-cover cursor-pointer'/>
+                        <Link to={`/profile/${user.name}`}><img src={user.profilePicture ? user.profilePicture : blankDp} alt="" className='w-8 h-8 rounded-[50%] object-cover cursor-pointer'/></Link>
                     </div>
                 </ul>
 
