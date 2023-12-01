@@ -53,11 +53,14 @@ const Navbar = () => {
                             <span className='absolute flex items-center justify-center top-1 ml-3  bg-red-600 rounded-[50%] text-white px-[4px] font-medium text-xs'>2</span>
                         </div>
                         <div className='mx-2'> 
+                        <Link to="/messenger">
                             <div className='flex items-center text-xl text-white relative'>
                             <ion-icon name="chatbox-ellipses-sharp"></ion-icon>
                             </div>
                             <span className='absolute flex items-center justify-center top-1 ml-3  bg-red-600 rounded-[50%] text-white px-[4px] font-medium text-xs'>2</span>
+                            </Link>
                         </div>
+
                         <div className='mx-2'>
                             <div className='flex items-center text-xl text-white relative'>
                             <ion-icon name="notifications-sharp"></ion-icon>

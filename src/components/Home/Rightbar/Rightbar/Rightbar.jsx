@@ -1,7 +1,6 @@
 import React from 'react';
 import birthdayImg from "../../../../assets/gift.png";
 
-import { Users } from '../../../../dummyData';
 import OnlineFriends from '../OnlineFriends/OnlineFriends';
 import Ad from '../Ad/Ad';
 
@@ -16,7 +15,7 @@ const Rightbar = () => {
                 <div className='px-1'>
                     <p className='text-md font-medium'>Online Friends</p>
                     <div>
-                        {Users.map(user => <OnlineFriends key={user.id} user={user} />)}
+                        <OnlineFriends />
                     </div>
                 </div>
             </div>

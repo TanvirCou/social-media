@@ -10,6 +10,7 @@ import Login from "./components/Login/Login";
 import Register from "./components/Register/Register";
 import { useContext } from "react";
 import { AuthContext } from "./components/context/AuthContext";
+import Messenger from "./components/Messenger/Messenger/Messenger";
 
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
         <Route path="/profile/:name" element={<Profile />} />
         <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
         <Route path="/register" element={user ? <Navigate to="/" /> : <Register />} />
+        <Route path="/messenger" element={!user ? <Navigate to="/" /> : <Messenger />} />
       </Routes>
     </BrowserRouter>
   )
