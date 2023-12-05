@@ -19,11 +19,11 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={user ? <Home /> : <Login />} />
+        <Route path="/" element={(user || (JSON.parse(localStorage.getItem("data"))))  ? <Home /> : <Login />} />
         <Route path="/profile/:name" element={<Profile />} />
-        <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
-        <Route path="/register" element={user ? <Navigate to="/" /> : <Register />} />
-        <Route path="/messenger" element={!user ? <Navigate to="/" /> : <Messenger />} />
+        <Route path="/login" element={user || (JSON.parse(localStorage.getItem("data"))) ? <Navigate to="/" /> : <Login />} />
+        <Route path="/register" element={user || (JSON.parse(localStorage.getItem("data"))) ? <Navigate to="/" /> : <Register />} />
+        <Route path="/messenger" element={!(JSON.parse(localStorage.getItem("data"))) ? <Navigate to="/" /> : <Messenger />} />
       </Routes>
     </BrowserRouter>
   )

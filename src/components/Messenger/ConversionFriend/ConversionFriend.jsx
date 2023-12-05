@@ -6,7 +6,7 @@ const ConversionFriend = ({ conversation, currentUser, active}) => {
     const [user, setUser] = useState({});
 
     useEffect(() => {
-        const friendId = conversation.members.find(member => member !== currentUser._id);
+        const friendId = conversation.members.find(member => member !== (currentUser._id));
         const getConvoFriend = async() => {
             try {
                 const res = await axios.get(`http://localhost:3000/api/users?userId=${friendId}`);

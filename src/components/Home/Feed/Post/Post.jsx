@@ -1,6 +1,7 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useEffect, useState } from 'react';
-import noAvatar from "../../../../assets/person/noAvatar.png";
-import imgPost from "../../../../assets/post/1.jpeg";
+import blankDp from "../../../../assets/person/noAvatar.png";
 import likeIcon from "../../../../assets/like.png";
 import loveIcon from "../../../../assets/heart.png";
 import { format } from 'timeago.js';
@@ -13,6 +14,7 @@ const Post = ({post}) => {
     const [isLiked, setIsLiked] = useState(false);
     const [user, setUser] = useState({});
     const {user: currentUser} = useContext(AuthContext);
+    const [localId, setLocalId] = useState((JSON.parse(localStorage.getItem("data")))._id);
 
     useEffect(() => {
         const fetchPosts = async() => {
@@ -23,12 +25,12 @@ const Post = ({post}) => {
     }, [post.userId]);
 
         useEffect(() => {
-            setIsLiked(post.likes.includes(currentUser._id));
-        }, [post.likes, currentUser._id]);
+            setIsLiked(post.likes.includes(localId));
+        }, [post.likes, localId]);
     
     const likeHandler = () => {
         try {
-            axios.put(`http://localhost:3000/api/posts/${post._id}/like`, {userId: currentUser._id});
+            axios.put(`http://localhost:3000/api/posts/${post._id}/like`, {userId: localId});
         } catch(err) {
             console.log(err);
         }
@@ -42,7 +44,7 @@ const Post = ({post}) => {
                 <div className='flex items-center justify-between'>
                     <div className='flex items-center'>
                         <Link to={`/profile/${user.name}`}>
-                        <img src={user.profilePicture ? user.profilePicture : noAvatar} alt="" className='w-8 h-8 rounded-[50%] object-cover'/>
+                        <img src={user.profilePicture ? user.profilePicture : blankDp} alt="" className='w-8 h-8 rounded-[50%] object-cover'/>
                         </Link>
                         <p className='text-md font-medium mx-3'>{user.name}</p>
                         <p className='text-sm font-medium text-gray-500'>{format(post.createdAt)}</p>
@@ -54,7 +56,7 @@ const Post = ({post}) => {
 
                 <div className='my-3'>
                     <p className='text-md font-medium text-black'>{post?.desc}</p>
-                    {post.img && <img src={`data:image/${post?.img.contentType};base64,${post?.img.img}`} alt=""  className='w-full max-h-[500px] mt-3 object-contain'/>}
+                    {post.img && <img src={post?.img} alt=""  className='w-full max-h-[500px] mt-3 object-contain'/>}
                 </div>
 
                 <div className='flex items-center justify-between'>

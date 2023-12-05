@@ -28,14 +28,14 @@ const Profile = () => {
             </div>
            <div className='w-9/12'>
                 <div>
-                   <Intro user={user} />
+                   <Intro user={user || (JSON.parse(localStorage.getItem("data")))} />
                 </div>
                 <div className='flex'>
                 <div className='w-8/12'>
                     <Feed name={name}></Feed>
                     </div>
                     <div className='w-4/12 my-4'>
-                    <UserInfo user={user} />
+                    <UserInfo user={user || (JSON.parse(localStorage.getItem("data")))} />
                     </div>
                 </div>
 

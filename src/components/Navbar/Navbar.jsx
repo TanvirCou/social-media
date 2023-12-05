@@ -69,7 +69,9 @@ const Navbar = () => {
                         </div>
                     </div>
                     <div>
-                        <Link to={`/profile/${user.name}`}><img src={user.profilePicture ? user.profilePicture : blankDp} alt="" className='w-8 h-8 rounded-[50%] object-cover cursor-pointer'/></Link>
+                        <Link to={`/profile/${user?.name || (JSON.parse(localStorage.getItem("data"))).name}`}>
+                            <img src={(user?.profilePicture || (JSON.parse(localStorage.getItem("data"))).profilePicture) ? (user?.profilePicture || (JSON.parse(localStorage.getItem("data"))).profilePicture) : blankDp} alt="" className='w-8 h-8 rounded-[50%] object-cover cursor-pointer'/>
+                        </Link>
                     </div>
                 </ul>
 

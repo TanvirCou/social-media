@@ -3,7 +3,7 @@ import {format} from "timeago.js";
 
 const Message = ({ message, own, user, friend }) => {
 
-    const userDp = user.profilePicture ? user.profilePicture : blankDp;
+    const userDp = user?.profilePicture ? user.profilePicture : blankDp;
     const friendDp = friend.profilePicture ? friend.profilePicture : blankDp;
 
     return (

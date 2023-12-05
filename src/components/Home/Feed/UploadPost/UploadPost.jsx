@@ -20,10 +20,11 @@ const UploadPost = () => {
             const data = new FormData()
             // const fileName = Date.now() + file.name;
             data.append("file", file);
-            data.append("userId", user._id);
+            data.append("userId", user?._id || (JSON.parse(localStorage.getItem("data")))._id);
             data.append("desc", desc.current.value);
             try {
                 await axios.post("http://localhost:3000/api/posts", data);
+                window.location.reload();
             } catch(err){
                 //
             }
@@ -43,8 +44,8 @@ const UploadPost = () => {
         <div className=' m-3 border shadow-md'>
             <div className='p-3'>
                 <div className='flex items-center'>
-                    <img src={user.profilePicture ? user.profilePicture : blankDp} alt="" className='w-12 h-12 rounded-[50%] object-cover' />
-                    <input type="search" placeholder={`What's in your mind ${user.name}?`} ref={desc} className='text-md placeholder:font-medium w-[90%] h-full focus:outline-none focus:ring-0 placeholder:text-gray-500 border-none' />
+                    <img src={(user?.profilePicture || (JSON.parse(localStorage.getItem("data"))).profilePicture) ? (user?.profilePicture || (JSON.parse(localStorage.getItem("data"))).profilePicture) : blankDp} alt="" className='w-12 h-12 rounded-[50%] object-cover' />
+                    <input type="search" placeholder={`What's in your mind ${user?.name || (JSON.parse(localStorage.getItem("data"))).name}?`} ref={desc} className='text-md px-2 placeholder:font-medium w-[90%] h-full focus:outline-none focus:ring-0 placeholder:text-gray-500 border-none' />
                 </div>
                 <hr className='my-5 mx-4 border border-gray-300' />
                 {file && (

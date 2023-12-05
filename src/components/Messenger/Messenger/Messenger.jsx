@@ -15,18 +15,19 @@ const Messenger = () => {
     const [friend, setFriend] = useState({});
     const [newMessage, setNewMessage] = useState("");
     const scrollRef = useRef();
+    const [localId, setLocalId] = useState((JSON.parse(localStorage.getItem("data")))._id);
 
     useEffect(() => {
         const getConversation = async () => {
             try {
-                const res = await axios.get(`http://localhost:3000/api/conversations/${user._id}`);
+                const res = await axios.get(`http://localhost:3000/api/conversations/${user?._id || localId}`);
                 setConversations(res.data);
             } catch (err) {
                 console.log(err);
             }
         }
         getConversation();
-    }, [user._id]);
+    }, [user?._id, localId]);
 
     useEffect(() => {
         const getMessages = async() => {
@@ -43,7 +44,7 @@ const Messenger = () => {
     
 
     useEffect(() => {
-        const friendId = chatMessages.find(message => message.senderId !== user._id);
+        const friendId = chatMessages.find(message => message.senderId !== (localId));
         const getConvoFriend = async() => {
             try {
                 const res = await axios.get(`http://localhost:3000/api/users?userId=${friendId?.senderId}`);
@@ -53,13 +54,13 @@ const Messenger = () => {
             }
         }
         getConvoFriend();
-    }, [chatMessages, user._id]);
+    }, [chatMessages,  localId]);
 
     const handleNewMessage = async(e) => {
         e.preventDefault();
         const message = {
             conversationId: currentChat?._id,
-            senderId: user._id,
+            senderId: (user?._id || localId),
             text: newMessage
         };
         try {
@@ -85,7 +86,7 @@ const Messenger = () => {
                         <div>
                             {conversations.map(conversation => 
                             <div key={conversation._id} onClick={() => setCurrentChat(conversation)}>
-                            <ConversionFriend active={currentChat?._id === conversation?._id}  conversation={conversation} currentUser={user} />
+                            <ConversionFriend active={currentChat?._id === conversation?._id}  conversation={conversation} currentUser={(JSON.parse(localStorage.getItem("data")))} />
                             </div>)}
                         </div>
                     </div>
@@ -100,7 +101,7 @@ const Messenger = () => {
                                     <p className="text-md font-semibold mx-2">{friend.name}</p>
                                 </div> */}
                                 {
-                                    chatMessages.map(message => <div ref={scrollRef} key={message._id}> <Message  message={message} own={message.senderId === user._id} user={user} friend={friend}/> </div>)
+                                    chatMessages.map(message => <div ref={scrollRef} key={message._id}> <Message  message={message} own={message.senderId === (user?._id || localId)} user={(JSON.parse(localStorage.getItem("data")))} friend={friend}/> </div>)
                                 }
                                 
                             </div>
