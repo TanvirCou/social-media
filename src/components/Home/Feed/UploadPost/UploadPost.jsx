@@ -11,40 +11,55 @@ const UploadPost = () => {
 
     const handleSubmit = async(e) => {
         e.preventDefault();
-        // const newPost = {
-        //     userId: user._id,
-        //     desc: desc.current.value
-        // };
-
-        // if(file) {
-            const data = new FormData()
-            // const fileName = Date.now() + file.name;
-            data.append("file", file);
-            data.append("userId", user?._id || loggedInUser._id);
-            data.append("desc", desc.current.value);
-            try {
-                await axios.post("http://localhost:3000/api/posts", data);
+            if(file || desc.current.value) {
+                if(file) {
+                    const data = new FormData();
+                data.append("file", file);
+                data.append("upload_preset", "panda-book");
+                data.append("cloud_name", "ddcn60bx4");
+                await fetch("https://api.cloudinary.com/v1_1/ddcn60bx4/image/upload", {
+                method: "POST",
+                body: data,
+            })
+                .then((res) => res.json())
+                .then(async(data) => {
+                    const userData = {
+                        userId: loggedInUser._id,
+                        desc: desc.current.value,
+                        img: data.url.toString()
+                    }
+                    await axios.post("http://localhost:3000/api/posts", userData);
+                    window.location.reload();
+               
+                })
+                .catch((err) => {
+                    alert(err);
+    
+                });
+                } else {
+                    console.log("hey"); 
+                  
+                try {
+                    const userData = {
+                        userId: loggedInUser._id,
+                        desc: desc.current.value
+                };
+                await axios.post("http://localhost:3000/api/posts", userData);
                 window.location.reload();
-            } catch(err){
-                //
-            }
-            // data.append("name", fileName);
-            // newPost.img = fileName;
-        //     try {
-        //         await axios.post("http://localhost:3000/api/upload", data);
-        //     } catch(err){
-        //         //
-        //     }
-        // }
-        
-
+                        } catch(err){
+                            //
+                        }
+            } 
+        } else {
+            alert("Please write something or select a image")
+        }
 
     }
     return (
         <div className=' m-3 border shadow-md'>
             <div className='p-3'>
                 <div className='flex items-center'>
-                    <img src={(user?.profilePicture || loggedInUser.profilePicture) ? (user?.profilePicture || loggedInUser.profilePicture) : blankDp} alt="" className='w-12 h-12 rounded-[50%] object-cover' />
+                    <img src={loggedInUser.profilePicture} alt="" className='w-12 h-12 rounded-[50%] object-cover' />
                     <input type="search" placeholder={`What's in your mind ${user?.name || loggedInUser.name}?`} ref={desc} className='text-md px-2 placeholder:font-medium w-[90%] h-full focus:outline-none focus:ring-0 placeholder:text-gray-500 border-none' />
                 </div>
                 <hr className='my-5 mx-4 border border-gray-300' />

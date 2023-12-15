@@ -43,7 +43,7 @@ const Navbar = () => {
                 <ul className={`md:flex md:items-center bg-blue-600 md:justify-around md:pb-0 pb-12 absolute md:static  md:z-auto z-[-1] left-0 w-full md:w-4/12 md:pl-0 pl-9 transition-all duration-500 ease-in ${open ? 'top-16 ' : 'top-[-490px]'}`}>
                     <div className='text-sm font-medium text-white'>
                         <span className='mr-3'><Link to="/">Homepage</Link></span>
-                        <span><Link to="profile/:username">Timeline</Link></span>
+                        <span><Link to={`profile/${loggedInUser.name}`}>Timeline</Link></span>
                     </div>
                     <div className='flex items-center justify-center'>
                         <div className='mx-2'>
@@ -70,7 +70,7 @@ const Navbar = () => {
                     </div>
                     <div>
                         <Link to={`/profile/${user?.name || loggedInUser.name}`}>
-                            <img src={(user?.profilePicture || loggedInUser.profilePicture) ? (user?.profilePicture || loggedInUser.profilePicture) : blankDp} alt="" className='w-8 h-8 rounded-[50%] object-cover cursor-pointer'/>
+                            <img src={loggedInUser.profilePicture} alt="" className='w-8 h-8 rounded-[50%] object-cover cursor-pointer'/>
                         </Link>
                     </div>
                 </ul>

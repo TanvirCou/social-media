@@ -1,17 +1,22 @@
+
+import React, { useContext, useEffect, useState } from 'react';
+import { AuthContext } from '../../../context/AuthContext';
+import axios from 'axios';
+import CloseFriends from "../CloseFriends/CloseFriends";
 import SidebarItem from "../SidebarItem/SidebarItem";
 import "./Sidebar.css";
-import { Users } from "../../../../dummyData";
-import CloseFriends from "../CloseFriends/CloseFriends";
 
 const Sidebar = () => {
     const data = [
         {
             icon: "newspaper-sharp",
-            title: "NewsFeed"
+            title: "NewsFeed",
+            link: "/"
         },
         {
             icon: "chatbox-ellipses-sharp",
-            title: "Chats"
+            title: "Chats",
+            link: "/messenger"
         },
         {
             icon: "caret-forward-circle-sharp",
@@ -41,7 +46,23 @@ const Sidebar = () => {
             icon: "school-sharp",
             title: "Courses"
         },
-    ]
+    ];
+
+    const [friends, setFriends] = useState([]);
+    const {loggedInUser} = useContext(AuthContext);
+
+    useEffect(() => {
+        const getFriends = async() => {
+            try {
+                const res = await axios.post(`http://localhost:3000/api/users/friends`, {userId: loggedInUser._id});
+            setFriends(res.data);
+            } catch(err){
+                //
+            }
+        };
+        getFriends();
+    },[loggedInUser]);
+
     return (
         <div >
             <div className="fixed w-3/12 h-[92vh] overflow-y-scroll pl-8 webkit">
@@ -53,7 +74,7 @@ const Sidebar = () => {
             <button className="bg-gray-200 px-8 py-2 rounded text-[15px] font-medium">Show More</button>
             <hr className="my-5 border-1 border-gray-300"/>
             <div>
-                {Users.map(user => <CloseFriends key={user.id} user={user}/>)}
+                {friends.map(friend => <CloseFriends key={friend._id} friend={friend}/>)}
             </div>
             </div>
         </div>

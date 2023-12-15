@@ -8,29 +8,65 @@ const Intro = ({ user }) => {
     const {user: currentUser, loggedInUser} = useContext(AuthContext);
     const [dpFile, setDpFile] = useState(null);
     const [coverFile, setCoverFile] = useState(null);
-    console.log(coverFile);
+    const [file, setFile] = useState(null)
+   
+
 
     const handleSubmit = async(e) => {
         e.preventDefault();
-            const data = new FormData()
             if(dpFile) {
-                data.append("dpFile", dpFile);
+                const data = new FormData();
+                data.append("file", dpFile);
+                data.append("upload_preset", "panda-book");
+                data.append("cloud_name", "ddcn60bx4");
+                await fetch("https://api.cloudinary.com/v1_1/ddcn60bx4/image/upload", {
+                method: "POST",
+                body: data,
+            })
+                .then((res) => res.json())
+                .then(async(data) => {
+                    const userData = {
+                        userId: loggedInUser._id,
+                        profilePicture: data.url.toString()
+                    }
+                    await axios.put(`http://localhost:3000/api/users/${(currentUser?._id || loggedInUser._id)}`, userData);
+                    window.location.reload();
+                    setDpFile(null);
+               
+                })
+                .catch((err) => {
+                    alert(err);
+
+                });
+                
+                
             }
             if(coverFile) {
-                data.append("coverFile", coverFile);
-            }
-            
-            
-            data.append("userId", (currentUser?._id || loggedInUser._id));
-            try {
-                await axios.put(`http://localhost:3000/api/users/${(currentUser?._id || loggedInUser._id)}`, data);
-                window.location.reload();
-                setDpFile(null);
-                setCoverFile(null);
-            } catch(err){
-                console.log(err);
-            }
+                const data = new FormData();
+                data.append("file", coverFile);
+                data.append("upload_preset", "panda-book");
+                data.append("cloud_name", "ddcn60bx4");
+                await fetch("https://api.cloudinary.com/v1_1/ddcn60bx4/image/upload", {
+                method: "POST",
+                body: data,
+            })
+                .then((res) => res.json())
+                .then(async(data) => {
+                    const userData = {
+                        userId: loggedInUser._id,
+                        coverPicture: data.url.toString()
+                    };
+                    await axios.put(`http://localhost:3000/api/users/${(currentUser?._id || loggedInUser._id)}`, userData);
+                    window.location.reload();
+                    setCoverFile(null);
+                })
+                .catch((err) => {
+                    alert(err);
+
+                });
+            }      
     }
+
     return (
         <div className='mt-3'>
             <div className='px-2'>
@@ -39,7 +75,7 @@ const Intro = ({ user }) => {
                     {(!dpFile && !coverFile) ? (
                     <div className='h-[315px] relative flex justify-center'>
                         <div>
-                        <img src={user.coverPicture ? user.coverPicture : blankDp} alt="" className='h-[250px] w-full object-cover relative'/>
+                        <img src={user?.coverPicture} alt="" className='h-[250px] w-full object-cover relative'/>
                         {user.name === (currentUser?.name || loggedInUser.name) && (<label htmlFor='coverFile' className='absolute text-3xl text-blue-600 cursor-pointer right-5 bottom-14'>
                         <ion-icon name="create-sharp"></ion-icon>
                         <input type="file" id='coverFile' accept=".png,.jpeg,.jpg" className='hidden' onChange={(e) => setCoverFile(e.target.files[0])}/>
@@ -47,7 +83,7 @@ const Intro = ({ user }) => {
                         </div>
 
                         <div className='absolute top-36 flex justify-end items-end'>
-                        <img src={user.profilePicture ? user.profilePicture : blankDp} alt="" className='h-[160px] w-[160px]  rounded-[50%]  border-4 border-solid relative border-white'/>
+                        <img src={user.profilePicture} alt="" className='h-[160px] w-[160px]  rounded-[50%]  border-4 border-solid relative border-white'/>
                         {user.name === (currentUser?.name || loggedInUser.name) && (<label htmlFor='dpFile' className='absolute text-2xl text-blue-600 bottom-5 cursor-pointer'>
                         <ion-icon name="create-sharp"></ion-icon>
                         <input type="file" id='dpFile' accept=".png,.jpeg,.jpg" className='hidden' onChange={(e) => setDpFile(e.target.files[0])}/>
