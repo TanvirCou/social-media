@@ -14,16 +14,16 @@ import Messenger from "./components/Messenger/Messenger/Messenger";
 
 
 function App() {
-  const {user} = useContext(AuthContext);
+  const {user, loggedInUser} = useContext(AuthContext);
 
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={(user || (JSON.parse(localStorage.getItem("data"))))  ? <Home /> : <Login />} />
-        <Route path="/profile/:name" element={<Profile />} />
-        <Route path="/login" element={user || (JSON.parse(localStorage.getItem("data"))) ? <Navigate to="/" /> : <Login />} />
-        <Route path="/register" element={user || (JSON.parse(localStorage.getItem("data"))) ? <Navigate to="/" /> : <Register />} />
-        <Route path="/messenger" element={!(JSON.parse(localStorage.getItem("data"))) ? <Navigate to="/" /> : <Messenger />} />
+        <Route path="/" element={(user || loggedInUser)  ? <Home /> : <Login />} />
+        <Route path="/profile/:name" element={(user || loggedInUser) ? <Profile /> : <Login />} />
+        <Route path="/login" element={(user || loggedInUser) ? <Navigate to="/" /> : <Login />} />
+        <Route path="/register" element={(user || loggedInUser) ? <Navigate to="/" /> : <Register />} />
+        <Route path="/messenger" element={!loggedInUser ? <Navigate to="/" /> : <Messenger />} />
       </Routes>
     </BrowserRouter>
   )

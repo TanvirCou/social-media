@@ -5,7 +5,7 @@ import axios from "axios";
 import { AuthContext } from '../../context/AuthContext';
 
 const Intro = ({ user }) => {
-    const {user: currentUser} = useContext(AuthContext);
+    const {user: currentUser, loggedInUser} = useContext(AuthContext);
     const [dpFile, setDpFile] = useState(null);
     const [coverFile, setCoverFile] = useState(null);
     console.log(coverFile);
@@ -21,9 +21,9 @@ const Intro = ({ user }) => {
             }
             
             
-            data.append("userId", (currentUser?._id || (JSON.parse(localStorage.getItem("data")))._id));
+            data.append("userId", (currentUser?._id || loggedInUser._id));
             try {
-                await axios.put(`http://localhost:3000/api/users/${(currentUser?._id || (JSON.parse(localStorage.getItem("data")))._id)}`, data);
+                await axios.put(`http://localhost:3000/api/users/${(currentUser?._id || loggedInUser._id)}`, data);
                 window.location.reload();
                 setDpFile(null);
                 setCoverFile(null);
@@ -40,7 +40,7 @@ const Intro = ({ user }) => {
                     <div className='h-[315px] relative flex justify-center'>
                         <div>
                         <img src={user.coverPicture ? user.coverPicture : blankDp} alt="" className='h-[250px] w-full object-cover relative'/>
-                        {user.name === (currentUser?.name || (JSON.parse(localStorage.getItem("data"))).name) && (<label htmlFor='coverFile' className='absolute text-3xl text-blue-600 cursor-pointer right-5 bottom-14'>
+                        {user.name === (currentUser?.name || loggedInUser.name) && (<label htmlFor='coverFile' className='absolute text-3xl text-blue-600 cursor-pointer right-5 bottom-14'>
                         <ion-icon name="create-sharp"></ion-icon>
                         <input type="file" id='coverFile' accept=".png,.jpeg,.jpg" className='hidden' onChange={(e) => setCoverFile(e.target.files[0])}/>
                         </label>)}
@@ -48,7 +48,7 @@ const Intro = ({ user }) => {
 
                         <div className='absolute top-36 flex justify-end items-end'>
                         <img src={user.profilePicture ? user.profilePicture : blankDp} alt="" className='h-[160px] w-[160px]  rounded-[50%]  border-4 border-solid relative border-white'/>
-                        {user.name === (currentUser?.name || (JSON.parse(localStorage.getItem("data"))).name) && (<label htmlFor='dpFile' className='absolute text-2xl text-blue-600 bottom-5 cursor-pointer'>
+                        {user.name === (currentUser?.name || loggedInUser.name) && (<label htmlFor='dpFile' className='absolute text-2xl text-blue-600 bottom-5 cursor-pointer'>
                         <ion-icon name="create-sharp"></ion-icon>
                         <input type="file" id='dpFile' accept=".png,.jpeg,.jpg" className='hidden' onChange={(e) => setDpFile(e.target.files[0])}/>
                         </label>)}

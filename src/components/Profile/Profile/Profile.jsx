@@ -6,16 +6,24 @@ import Intro from '../Intro/Intro';
 import UserInfo from '../UserInfo/UserInfo';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import UserInfoSkeleton from '../../Skeleton/UserInfoSkeleton';
 
 const Profile = () => {
     const [user, setUser] = useState({});
+    const [loading, setLoading] = useState(false);
     const params = useParams();
     const name = params.name;
 
     useEffect(() => {
+        setLoading(true);
         const fetchPosts = async() => {
-            const res = await axios.get(`http://localhost:3000/api/users?name=${name}`);
-            setUser(res.data);
+            try {
+                const res = await axios.get(`http://localhost:3000/api/users?name=${name}`);
+                setUser(res.data);
+                setLoading(false);
+            } catch(err) {
+                //
+            }
         }
         fetchPosts();
     }, [name]);
@@ -28,14 +36,14 @@ const Profile = () => {
             </div>
            <div className='w-9/12'>
                 <div>
-                   <Intro user={user || (JSON.parse(localStorage.getItem("data")))} />
+                   <Intro user={user} />
                 </div>
                 <div className='flex'>
                 <div className='w-8/12'>
                     <Feed name={name}></Feed>
                     </div>
                     <div className='w-4/12 my-4'>
-                    <UserInfo user={user || (JSON.parse(localStorage.getItem("data")))} />
+                    {loading ? <UserInfoSkeleton /> :  <UserInfo user={user} />}
                     </div>
                 </div>
 

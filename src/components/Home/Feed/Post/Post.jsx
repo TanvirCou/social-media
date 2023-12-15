@@ -13,8 +13,7 @@ const Post = ({post}) => {
     const [like, setLike] = useState(post.likes.length);
     const [isLiked, setIsLiked] = useState(false);
     const [user, setUser] = useState({});
-    const {user: currentUser} = useContext(AuthContext);
-    const [localId, setLocalId] = useState((JSON.parse(localStorage.getItem("data")))._id);
+    const {loggedInUser} = useContext(AuthContext);
 
     useEffect(() => {
         const fetchPosts = async() => {
@@ -25,12 +24,12 @@ const Post = ({post}) => {
     }, [post.userId]);
 
         useEffect(() => {
-            setIsLiked(post.likes.includes(localId));
-        }, [post.likes, localId]);
+            setIsLiked(post.likes.includes(loggedInUser._id));
+        }, [post.likes, loggedInUser]);
     
     const likeHandler = () => {
         try {
-            axios.put(`http://localhost:3000/api/posts/${post._id}/like`, {userId: localId});
+            axios.put(`http://localhost:3000/api/posts/${post._id}/like`, {userId: loggedInUser._id});
         } catch(err) {
             console.log(err);
         }

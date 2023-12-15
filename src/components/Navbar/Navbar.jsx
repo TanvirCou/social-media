@@ -13,7 +13,7 @@ const Navbar = () => {
     //   ];
 
     const [open, setOpen] = useState(false);
-    const {user} = useContext(AuthContext);
+    const {user, loggedInUser, notifications} = useContext(AuthContext);
 
     return (
         <div className='shadow-md w-full fixed top-0 left-0 z-10 '>
@@ -57,7 +57,7 @@ const Navbar = () => {
                             <div className='flex items-center text-xl text-white relative'>
                             <ion-icon name="chatbox-ellipses-sharp"></ion-icon>
                             </div>
-                            <span className='absolute flex items-center justify-center top-1 ml-3  bg-red-600 rounded-[50%] text-white px-[4px] font-medium text-xs'>2</span>
+                            {notifications.length ? <span className='absolute flex items-center justify-center top-1 ml-3  bg-red-600 rounded-[50%] text-white px-[4px] font-medium text-xs'>{notifications.length}</span> : ""}
                             </Link>
                         </div>
 
@@ -69,8 +69,8 @@ const Navbar = () => {
                         </div>
                     </div>
                     <div>
-                        <Link to={`/profile/${user?.name || (JSON.parse(localStorage.getItem("data"))).name}`}>
-                            <img src={(user?.profilePicture || (JSON.parse(localStorage.getItem("data"))).profilePicture) ? (user?.profilePicture || (JSON.parse(localStorage.getItem("data"))).profilePicture) : blankDp} alt="" className='w-8 h-8 rounded-[50%] object-cover cursor-pointer'/>
+                        <Link to={`/profile/${user?.name || loggedInUser.name}`}>
+                            <img src={(user?.profilePicture || loggedInUser.profilePicture) ? (user?.profilePicture || loggedInUser.profilePicture) : blankDp} alt="" className='w-8 h-8 rounded-[50%] object-cover cursor-pointer'/>
                         </Link>
                     </div>
                 </ul>

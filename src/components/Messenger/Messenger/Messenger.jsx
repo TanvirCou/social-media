@@ -5,35 +5,46 @@ import ConversionFriend from "../ConversionFriend/ConversionFriend";
 import Message from "../Message/Message";
 import { AuthContext } from "../../context/AuthContext";
 import axios from "axios";
+import io from "socket.io-client";
 // import blankDp from "../../../assets/person/noAvatar.png";
 
+var socket, selectedChatCompare;
+
 const Messenger = () => {
-    const { user } = useContext(AuthContext);
+    const { user, loggedInUser, notifications, setNotifications } = useContext(AuthContext);
     const [conversations, setConversations] = useState([]);
     const [currentChat, setCurrentChat] = useState(null);
     const [chatMessages, setChatMessages] = useState([]);
     const [friend, setFriend] = useState({});
     const [newMessage, setNewMessage] = useState("");
     const scrollRef = useRef();
-    const [localId, setLocalId] = useState((JSON.parse(localStorage.getItem("data")))._id);
+    const [socketConnected, setSocketConnected] = useState(false);
+    const [typing, setTyping] = useState(false);
+    const [isTyping, setIsTyping] = useState(false);
+
+
 
     useEffect(() => {
         const getConversation = async () => {
             try {
-                const res = await axios.get(`http://localhost:3000/api/conversations/${user?._id || localId}`);
+                const res = await axios.get(`http://localhost:3000/api/conversations/${user?._id || loggedInUser._id}`);
                 setConversations(res.data);
+                console.log(res.data);
             } catch (err) {
                 console.log(err);
             }
         }
         getConversation();
-    }, [user?._id, localId]);
+    }, [user, loggedInUser]);
 
     useEffect(() => {
         const getMessages = async() => {
             try {
                 const res = await axios.get(`http://localhost:3000/api/messages/${currentChat?._id}`);
                 setChatMessages(res.data);
+
+                socket.emit("join chat", currentChat._id);
+                selectedChatCompare = currentChat;
             } catch(err) {
                 console.log(err);
             }
@@ -44,7 +55,7 @@ const Messenger = () => {
     
 
     useEffect(() => {
-        const friendId = chatMessages.find(message => message.senderId !== (localId));
+        const friendId = chatMessages.find(message => message.senderId !== loggedInUser._id);
         const getConvoFriend = async() => {
             try {
                 const res = await axios.get(`http://localhost:3000/api/users?userId=${friendId?.senderId}`);
@@ -54,19 +65,21 @@ const Messenger = () => {
             }
         }
         getConvoFriend();
-    }, [chatMessages,  localId]);
+    }, [chatMessages,  loggedInUser]);
 
     const handleNewMessage = async(e) => {
         e.preventDefault();
         const message = {
-            conversationId: currentChat?._id,
-            senderId: (user?._id || localId),
+            conversation: currentChat?._id,
+            senderId: (user?._id || loggedInUser),
             text: newMessage
         };
         try {
             const res = await axios.post(`http://localhost:3000/api/messages`, message);
                 setChatMessages([...chatMessages, res.data]);
                 setNewMessage("");
+                console.log(res.data.conversation.members);
+                socket.emit("new message", res.data);
         } catch(err) {
             console.log(err);
         }
@@ -74,7 +87,57 @@ const Messenger = () => {
 
     useEffect(() => {
         scrollRef.current?.scrollIntoView({ behavior: "smooth"});
-    }, [chatMessages])
+    }, [chatMessages]);
+
+
+
+    useEffect(() => {
+        socket = io("http://localhost:3000/");
+        socket.emit("setup", loggedInUser);
+        socket.on("connected", () => setSocketConnected(true));
+        socket.on("typing", () => setIsTyping(true));
+        socket.on("stop typing", () => setIsTyping(false));
+    }, []);
+
+    useEffect(() => {
+        socket.on("message received", (newMessageReceived) => {
+            if (!selectedChatCompare || (selectedChatCompare._id !== newMessageReceived.conversation._id)) {
+                if (!notifications.includes(newMessageReceived)) {
+                    setNotifications([newMessageReceived, ...notifications]);
+                    // setFetchAgain(!fetchAgain);
+                }
+            } else {
+                setChatMessages([...chatMessages, newMessageReceived]);
+            }
+                
+            
+        });
+    });
+
+console.log(notifications);
+
+    const handleTyping = (e) => {
+        setNewMessage(e.target.value);
+
+        if (!socketConnected) return;
+
+        if (!typing) {
+            setTyping(true);
+            socket.emit("typing", currentChat._id);
+        }
+
+        let lastTypingTime = new Date().getTime();
+        var timerLength = 3000;
+        setTimeout(() => {
+            var timeNow = new Date().getTime();
+            var timeDiff = timeNow - lastTypingTime;
+            if (timeDiff >= timerLength && typing) {
+                socket.emit("stop typing", currentChat._id);
+                setTyping(false);
+            }
+        }, timerLength);
+    };
+
 
     return (
         <div className="h-screen">
@@ -86,7 +149,7 @@ const Messenger = () => {
                         <div>
                             {conversations.map(conversation => 
                             <div key={conversation._id} onClick={() => setCurrentChat(conversation)}>
-                            <ConversionFriend active={currentChat?._id === conversation?._id}  conversation={conversation} currentUser={(JSON.parse(localStorage.getItem("data")))} />
+                            <ConversionFriend active={currentChat?._id === conversation?._id}  conversation={conversation} currentUser={loggedInUser} />
                             </div>)}
                         </div>
                     </div>
@@ -101,12 +164,15 @@ const Messenger = () => {
                                     <p className="text-md font-semibold mx-2">{friend.name}</p>
                                 </div> */}
                                 {
-                                    chatMessages.map(message => <div ref={scrollRef} key={message._id}> <Message  message={message} own={message.senderId === (user?._id || localId)} user={(JSON.parse(localStorage.getItem("data")))} friend={friend}/> </div>)
+                                    chatMessages.map(message => <div ref={scrollRef} key={message._id}> <Message  message={message} own={message.senderId === (user?._id || loggedInUser._id)} user={loggedInUser} friend={friend}/> </div>)
                                 }
                                 
                             </div>
+                            {isTyping ? <div className='bg-gray-200 w-fit h-fit px-3 rounded-md my-1 mx-2'>
+                                            <span className="loading loading-dots loading-md"></span>
+                                        </div> : ""}
                             <div className="flex items-center justify-between px-2">
-                                <textarea onChange={(e) => setNewMessage(e.target.value)} value={newMessage} placeholder="Write something..." className="rounded-md w-[85%] h-16 p-2 border border-gray-600 focus:outline-blue-600 text-md font-medium"></textarea>
+                                <textarea value={newMessage} onChange={handleTyping}  placeholder="Write something..." className="rounded-md w-[85%] h-16 p-2 border border-gray-600 focus:outline-blue-600 text-md font-medium"></textarea>
                                 <button onClick={handleNewMessage} className="py-1 px-3 rounded-md text-white bg-teal-600">Send</button>
                             </div>
                         </div>

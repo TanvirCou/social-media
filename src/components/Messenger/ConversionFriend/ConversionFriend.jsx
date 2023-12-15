@@ -11,6 +11,7 @@ const ConversionFriend = ({ conversation, currentUser, active}) => {
             try {
                 const res = await axios.get(`http://localhost:3000/api/users?userId=${friendId}`);
                 setUser(res.data);
+                console.log(res.data);
             } catch(err) {
                 console.log(err);
             }
