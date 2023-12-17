@@ -2,6 +2,7 @@ import { useContext, useState } from 'react';
 import blankDp from "../../assets/person/noAvatar.png";
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import axios from 'axios';
 
 const Navbar = () => {
     // let Links =[
@@ -14,6 +15,18 @@ const Navbar = () => {
 
     const [open, setOpen] = useState(false);
     const {user, loggedInUser, notifications} = useContext(AuthContext);
+    const [search, setSearch] = useState("");
+    const [searchResult, setSearchResult] = useState([]);
+
+    const handleSearch = async (text) => {
+        setSearch(text);
+        try {
+            const res = await axios.post(`http://localhost:3000/api/users/search?search=${search}`, {userId: loggedInUser._id});
+            setSearchResult(res.data);
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
     return (
         <div className='shadow-md w-full fixed top-0 left-0 z-10 '>
@@ -36,7 +49,21 @@ const Navbar = () => {
                         <div className='flex items-center text-lg font-semibold pl-3 pt-1'>
                             <ion-icon name="search-sharp"></ion-icon>
                         </div>
-                        <input type="search" placeholder='Search for friend, post or video' className='h-full w-[90%] border-none focus:outline-none focus:ring-0 placeholder:font-medium placeholder:text-sm pl-1 ' />
+                        <div className="dropdown dropdown-bottom w-full">
+                        <div tabIndex={0} role="button" className="">
+                        <input type="search" value={search} onChange={(e) => handleSearch(e.target.value)} placeholder='Search for friend, post or video' className='h-full w-[90%] border-none focus:outline-none focus:ring-0 placeholder:font-medium placeholder:text-sm pl-1 ' />
+                        </div>
+                        <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-[525px]">
+                            <div className='w-full'>
+                            {searchResult ? searchResult.slice(0,4).map(data => (<div key={data.email}><Link to={`http://127.0.0.1:5173/profile/${data.name}`}>
+                                <div className={`flex items-center my-2 p-2 cursor-pointer hover:bg-teal-500 rounded-md`}>
+                                <img src={data?.profilePicture} alt="" className='w-8 h-8 rounded-[50%] object-cover'/>
+                                <span className='mx-3 text-md font-medium'>{data.name}</span>
+                            </div></Link>
+                            </div>)) : ""}
+                            </div>
+                        </ul>
+                        </div>
                     </div>
                 </div>
 
@@ -70,7 +97,7 @@ const Navbar = () => {
                     </div>
                     <div>
                         <Link to={`/profile/${user?.name || loggedInUser.name}`}>
-                            <img src={loggedInUser.profilePicture} alt="" className='w-8 h-8 rounded-[50%] object-cover cursor-pointer'/>
+                            <img src={loggedInUser?.profilePicture} alt="" className='w-8 h-8 rounded-[50%] object-cover cursor-pointer'/>
                         </Link>
                     </div>
                 </ul>

@@ -59,7 +59,7 @@ const UploadPost = () => {
         <div className=' m-3 border shadow-md'>
             <div className='p-3'>
                 <div className='flex items-center'>
-                    <img src={loggedInUser.profilePicture} alt="" className='w-12 h-12 rounded-[50%] object-cover' />
+                    <img src={loggedInUser?.profilePicture} alt="" className='w-12 h-12 rounded-[50%] object-cover' />
                     <input type="search" placeholder={`What's in your mind ${user?.name || loggedInUser.name}?`} ref={desc} className='text-md px-2 placeholder:font-medium w-[90%] h-full focus:outline-none focus:ring-0 placeholder:text-gray-500 border-none' />
                 </div>
                 <hr className='my-5 mx-4 border border-gray-300' />

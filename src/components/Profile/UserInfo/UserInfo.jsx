@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useContext, useEffect, useRef, useState } from "react";
-import blankDp from "../../../assets/person/noAvatar.png";
+import { useContext, useEffect, useState } from "react";
 import Ad from "../../Home/Rightbar/Ad/Ad";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
@@ -133,12 +132,12 @@ const UserInfo = ({user}) => {
             )
             }
             {(friends.length > 0) && <p className='text-lg font-bold mt-5 mb-3'>User friends</p>}
-            <div className="flex flex-wrap justify-between">
+            <div className="flex flex-wrap w-full gap-2">
                 {
                 friends.map(friend => (
                     <Link to={`/profile/${friend.name}`} key={friend._id}>
-                        <div  className="flex flex-col items-center cursor-pointer mb-2">
-                    <img src={friend.profilePicture ? friend.profilePicture : blankDp} alt="" className="w-24 h-24 object-cover rounded-md"/>
+                        <div  className="flex flex-col items-center cursor-pointer">
+                    <img src={friend?.profilePicture} alt="" className="w-24 h-24 rounded-2xl object-cover"/>
                     <span className="text-[15px] font-medium">{friend.name}</span>
                     </div>
                     </Link>

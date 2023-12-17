@@ -83,7 +83,7 @@ const Intro = ({ user }) => {
                         </div>
 
                         <div className='absolute top-36 flex justify-end items-end'>
-                        <img src={user.profilePicture} alt="" className='h-[160px] w-[160px]  rounded-[50%]  border-4 border-solid relative border-white'/>
+                        <img src={user?.profilePicture} alt="" className='h-[160px] w-[160px]  rounded-[50%]  border-4 border-solid relative border-white'/>
                         {user.name === (currentUser?.name || loggedInUser.name) && (<label htmlFor='dpFile' className='absolute text-2xl text-blue-600 bottom-5 cursor-pointer'>
                         <ion-icon name="create-sharp"></ion-icon>
                         <input type="file" id='dpFile' accept=".png,.jpeg,.jpg" className='hidden' onChange={(e) => setDpFile(e.target.files[0])}/>

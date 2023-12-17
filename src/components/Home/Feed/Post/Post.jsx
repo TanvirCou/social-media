@@ -73,7 +73,7 @@ const Post = ({ post }) => {
                 <div className='flex items-center justify-between'>
                     <div className='flex items-center'>
                         <Link to={`/profile/${user.name}`}>
-                            <img src={user.profilePicture} alt="" className='w-8 h-8 rounded-[50%] object-cover' />
+                            <img src={user?.profilePicture} alt="" className='w-8 h-8 rounded-[50%] object-cover' />
                         </Link>
                         <p className='text-md font-medium mx-3'>{user.name}</p>
                         <p className='text-sm font-medium text-gray-500'>{format(post.createdAt)}</p>
@@ -113,7 +113,7 @@ const Post = ({ post }) => {
                         <div className='my-2 px-2'>
                         {
                             postComments && postComments.map((comment, index) => (<div key={index} className='flex bg-white py-2 px-1 rounded-md'>
-                                <img src={comment.user.profilePicture} alt="" className='w-6 h-6 mx-2 rounded-full object-cover mt-1'/>
+                                <img src={comment.user?.profilePicture} alt="" className='w-6 h-6 mx-2 rounded-full object-cover mt-1'/>
                                 <div>
                                     <p className='font-medium'>{comment.user.name}</p>
                                     <p className='text-sm bg-gray-200 px-3 py-1 rounded-md'>{comment.content}</p>

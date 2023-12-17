@@ -3,8 +3,8 @@ import {format} from "timeago.js";
 
 const Message = ({ message, own, user, friend }) => {
 
-    const userDp = user?.profilePicture ? user.profilePicture : blankDp;
-    const friendDp = friend.profilePicture ? friend.profilePicture : blankDp;
+    const userDp = user?.profilePicture;
+    const friendDp = friend?.profilePicture;
 
     return (
         <div className={`flex flex-col ${own ? "items-end" : "items-start"}`}>

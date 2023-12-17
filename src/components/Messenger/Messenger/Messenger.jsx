@@ -21,6 +21,9 @@ const Messenger = () => {
     const [socketConnected, setSocketConnected] = useState(false);
     const [typing, setTyping] = useState(false);
     const [isTyping, setIsTyping] = useState(false);
+    
+    const [search, setSearch] = useState("");
+    const [searchResult, setSearchResult] = useState([]);
 
 
 
@@ -114,7 +117,6 @@ const Messenger = () => {
         });
     });
 
-console.log(notifications);
 
     const handleTyping = (e) => {
         setNewMessage(e.target.value);
@@ -139,13 +141,51 @@ console.log(notifications);
     };
 
 
+    const handleSearch = async (text) => {
+        setSearch(text);
+        try {
+            const res = await axios.post(`http://localhost:3000/api/users/search?search=${search}`, {userId: loggedInUser._id});
+            setSearchResult(res.data);
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+  
+
+    const handleCreateConvo = async (friend) => {
+        try {
+            const res = await axios.post(`http://localhost:3000/api/conversations/createConvo`, { senderId: loggedInUser._id, receiverId: friend._id });
+            const convoId = conversations.map(c => c.members.find(m => m !== loggedInUser._id));
+            if (!convoId.includes(friend._id)) {
+                setConversations([res.data, ...conversations]);
+            }
+            // setSelectedChat(res.data);
+        } catch (err) {
+            //
+        }
+    }
+
+    console.log(conversations);
+
     return (
         <div className="h-screen">
             <Navbar />
             <div className="flex pt-12 h-full">
                 <div className="w-3/12">
                     <div className="p-3">
-                        <input type="search" placeholder="Search your friend" className="w-[90%] text-md font-medium placeholder:text-md placeholder:font-medium border-0 border-b-2 border-gray-300 focus:border-b-2 focus:border-gray-300 focus:outline-none focus:ring-0" />
+                        <input type="search" value={search} onChange={(e) => handleSearch(e.target.value)} placeholder="Search your friend" className="w-[90%] text-md font-medium placeholder:text-md placeholder:font-medium border-0 border-b-2 border-gray-300 focus:border-b-2 focus:border-gray-300 focus:outline-none focus:ring-0" />
+
+                        <div>
+                            {searchResult ? searchResult.map(data => (<div key={data.email} onClick={()=>handleCreateConvo(data)}> 
+                                <div className={`flex items-center my-2 p-2 cursor-pointer bg-gray-300 hover:bg-teal-500 rounded-md`}>
+                                <img src={data?.profilePicture} alt="" className='w-8 h-8 rounded-[50%] object-cover'/>
+                                <span className='mx-3 text-md font-medium'>{data.name}</span>
+                            </div>
+                            <hr className="mt-3 border-2 border-gray-200"/>
+                            </div>)) : ""}
+                        </div>
+                                
                         <div>
                             {conversations.map(conversation => 
                             <div key={conversation._id} onClick={() => setCurrentChat(conversation)}>
@@ -160,7 +200,7 @@ console.log(notifications);
                             <div className="flex flex-col justify-between h-full">
                             <div className="px-2 overflow-y-scroll webkit">
                                 {/* <div className="border shadow-md mb-2 py-2 px-4 flex items-center bg-gray-100">
-                                    <img src={friend.profilePicture ? friend.profilePicture : blankDp} alt="" className="w-8 h-8 rounded-[50%] object-cover"/>
+                                    <img src={friend?.profilePicture} alt="" className="w-8 h-8 rounded-[50%] object-cover"/>
                                     <p className="text-md font-semibold mx-2">{friend.name}</p>
                                 </div> */}
                                 {
