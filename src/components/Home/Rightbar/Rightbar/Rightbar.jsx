@@ -11,12 +11,12 @@ const Rightbar = () => {
                 <span className='text-sm ml-1'> <b>Tanvir Ahmed</b> and <b>3 other friends</b> have a birthday today</span>
             </div>
             <Ad />
-            <div className='px-1'>
+            {/* <div className='px-1'>
                 <p className='text-md font-medium'>Online Friends</p>
                 <div>
                     <OnlineFriends />
                 </div>
-            </div>
+            </div> */}
         </div>
 
     );
