@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 export const LoginStart = (userCredential) => ({
     type: "LOGIN_START",
 });

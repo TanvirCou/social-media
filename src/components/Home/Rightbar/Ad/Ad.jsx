@@ -1,4 +1,3 @@
-import React from 'react';
 import adImg from "../../../../assets/ad.png";
 
 const Ad = () => {

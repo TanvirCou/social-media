@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import blankDp from "../../../../assets/person/noAvatar.png";
+import { useContext, useEffect, useRef, useState } from 'react';
 import likeIcon from "../../../../assets/like.png";
 import loveIcon from "../../../../assets/heart.png";
 import { format } from 'timeago.js';
@@ -13,26 +12,26 @@ const Post = ({ post }) => {
     const [like, setLike] = useState(post.likes.length);
     const [isLiked, setIsLiked] = useState(false);
     const [user, setUser] = useState({});
-    const { loggedInUser } = useContext(AuthContext);
+    const { user: currentUser, loggedInUser } = useContext(AuthContext);
     const [commentActive, setCommentActive] = useState(false);
     const [postComments, setPostComments] = useState([...post.comments]);
     const commentRef = useRef();
 
     useEffect(() => {
         const fetchPosts = async () => {
-            const res = await axios.get(`http://localhost:3000/api/users?userId=${post.userId}`);
+            const res = await axios.get(`https://panda-book.onrender.com/api/users?userId=${post.userId}`);
             setUser(res.data);
         }
         fetchPosts();
     }, [post.userId]);
 
     useEffect(() => {
-        setIsLiked(post.likes.includes(loggedInUser._id));
+        setIsLiked(post.likes.includes(loggedInUser?._id || currentUser?._id));
     }, [post.likes, loggedInUser]);
 
     const likeHandler = () => {
         try {
-            axios.put(`http://localhost:3000/api/posts/${post._id}/like`, { userId: loggedInUser._id });
+            axios.put(`https://panda-book.onrender.com/api/posts/${post._id}/like`, { userId: loggedInUser?._id || currentUser?._id});
         } catch (err) {
             console.log(err);
         }
@@ -42,7 +41,7 @@ const Post = ({ post }) => {
 
     const handleDelete = async() => {
         try {
-            await axios.delete(`http://localhost:3000/api/posts/${post._id}`, {data: {userId: loggedInUser._id}});
+            await axios.delete(`https://panda-book.onrender.com/api/posts/${post._id}`, {data: {userId: loggedInUser?._id || currentUser?._id}});
             window.location.reload();
         } catch(err) {
             console.log(err);
@@ -52,10 +51,10 @@ const Post = ({ post }) => {
     const handleComment = async() => {
         const data = {
             content: commentRef.current.value,
-            user: loggedInUser
+            user: loggedInUser || currentUser
         }
         try {
-            await axios.put(`http://localhost:3000/api/posts/${post._id}/comments`, data);
+            await axios.put(`https://panda-book.onrender.com/api/posts/${post._id}/comments`, data);
             setPostComments([...postComments, data]);
             commentRef.current.value = "";
 
@@ -122,7 +121,7 @@ const Post = ({ post }) => {
                         }
                         </div>
                         <div className='w-full flex items-center'>
-                            <img src={loggedInUser?.profilePicture} className='w-8 h-8 mx-2 rounded-full object-cover'  alt="" />
+                            <img src={loggedInUser?.profilePicture || currentUser?.profilePicture} className='w-8 h-8 mx-2 rounded-full object-cover'  alt="" />
                             <input type="text" ref={commentRef} className='w-4/5 h-10 focus:outline-blue-600 rounded-md px-2'/>
                             <button onClick={handleComment} className='px-3 py-2 bg-blue-600 rounded-md text-white mx-2'>Send</button>
                         </div>

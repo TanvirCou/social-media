@@ -1,18 +1,18 @@
-import React from 'react';
+/* eslint-disable react/prop-types */
 import { Link } from 'react-router-dom';
 
-const SidebarItem = ({item}) => {
+const SidebarItem = ({ item }) => {
     return (
-                <div>
-                    <Link to={item?.link}>
-                    <div className="flex items-center pb-5">
+        <div>
+            <Link to={item?.link}>
+                <div className="flex items-center pb-5">
                     <div className="flex items-center text-xl">
-                    <ion-icon name={item.icon}></ion-icon>
+                        <ion-icon name={item.icon}></ion-icon>
                     </div>
                     <span className="text-[15px] mx-4 font-medium">{item.title}</span>
-                    </div>
-                    </Link>
                 </div>
+            </Link>
+        </div>
     );
 };
 

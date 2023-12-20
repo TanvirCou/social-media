@@ -1,5 +1,4 @@
-
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../../context/AuthContext';
 import axios from 'axios';
 import CloseFriends from "../CloseFriends/CloseFriends";
@@ -49,33 +48,33 @@ const Sidebar = () => {
     ];
 
     const [friends, setFriends] = useState([]);
-    const {loggedInUser} = useContext(AuthContext);
+    const { loggedInUser, user } = useContext(AuthContext);
 
     useEffect(() => {
-        const getFriends = async() => {
+        const getFriends = async () => {
             try {
-                const res = await axios.post(`http://localhost:3000/api/users/friends`, {userId: loggedInUser._id});
-            setFriends(res.data);
-            } catch(err){
+                const res = await axios.post(`https://panda-book.onrender.com/api/users/friends`, { userId: loggedInUser?._id || user?._id });
+                setFriends(res.data);
+            } catch (err) {
                 //
             }
         };
         getFriends();
-    },[loggedInUser]);
+    }, [loggedInUser, user]);
 
     return (
         <div >
             <div className="fixed w-3/12 h-[92vh] overflow-y-scroll pl-8 webkit">
-            <div className="pt-6">
-                {
-                    data.map(item => <SidebarItem key={item.title} item={item}></SidebarItem>)
-                }   
-            </div>
-            <button className="bg-gray-200 px-8 py-2 rounded text-[15px] font-medium">Show More</button>
-            <hr className="my-5 border-1 border-gray-300"/>
-            <div>
-                {friends.map(friend => <CloseFriends key={friend._id} friend={friend}/>)}
-            </div>
+                <div className="pt-6">
+                    {
+                        data.map(item => <SidebarItem key={item.title} item={item}></SidebarItem>)
+                    }
+                </div>
+                <button className="bg-gray-200 px-8 py-2 rounded text-[15px] font-medium">Show More</button>
+                <hr className="my-5 border-1 border-gray-300" />
+                <div>
+                    {friends.map(friend => <CloseFriends key={friend._id} friend={friend} />)}
+                </div>
             </div>
         </div>
     );

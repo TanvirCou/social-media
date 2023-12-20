@@ -1,4 +1,4 @@
-
+/* eslint-disable react/prop-types */
 
 const CloseFriends = ({friend}) => {
     
