@@ -46,7 +46,7 @@ const Navbar = () => {
                             </div>
                             <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-[525px]">
                                 <div className='w-full'>
-                                    {searchResult ? searchResult.slice(0, 4).map(data => (<div key={data.email}><Link to={`http://127.0.0.1:5173/profile/${data.name}`}>
+                                    {searchResult ? searchResult.slice(0, 4).map(data => (<div key={data.email}><Link to={`https://panda-book.netlify.app/profile/${data.name}`}>
                                         <div className={`flex items-center my-2 p-2 cursor-pointer hover:bg-teal-500 rounded-md`}>
                                             <img src={data?.profilePicture} alt="" className='w-8 h-8 rounded-[50%] object-cover' />
                                             <span className='mx-3 text-md font-medium'>{data.name}</span>
@@ -61,7 +61,7 @@ const Navbar = () => {
                 <ul className={`md:flex md:items-center bg-blue-600 md:justify-around md:pb-0 pb-12 absolute md:static  md:z-auto z-[-1] left-0 w-full md:w-4/12 md:pl-0 pl-9 transition-all duration-500 ease-in ${open ? 'top-16 ' : 'top-[-490px]'}`}>
                     <div className='text-sm font-medium text-white'>
                         <span className='mr-3'><Link to="/">Homepage</Link></span>
-                        <span><Link to={`http://127.0.0.1:5173/profile/${user?.name || loggedInUser?.name}`}>Timeline</Link></span>
+                        <span><Link to={`https://panda-book.netlify.app/profile/${user?.name || loggedInUser?.name}`}>Timeline</Link></span>
                     </div>
                     <div className='flex items-center justify-center'>
                         <div className='mx-2'>
