@@ -1,6 +1,6 @@
 import birthdayImg from "../../../../assets/gift.png";
 
-import OnlineFriends from '../OnlineFriends/OnlineFriends';
+// import OnlineFriends from '../OnlineFriends/OnlineFriends';
 import Ad from '../Ad/Ad';
 
 const Rightbar = () => {
